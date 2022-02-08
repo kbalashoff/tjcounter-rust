@@ -1,0 +1,16 @@
+[package]
+name = "tjcounter-rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hyper = "0.11.27"
+tokio = { version = "1", features = ["full"] }
+tokio-core = "0.1.18"
+pretty_env_logger = "0.4.0"
+futures = "0.1.21"
+bytes = "1.1.0"
+chrono = "0.4.19"
+sprintf = "*"

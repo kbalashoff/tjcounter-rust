@@ -99,7 +99,7 @@ fn calc_counter(freedom: &NaiveDateTime) -> String {
 fn main() {
     let addr = "0.0.0.0:8182".parse().expect("addres parsing failed");
 
-    let (tx_new, rx_new) = mpsc::channel(10);
+    let (tx_new, rx_new) = mpsc::channel(100);
 
     let server = Http::new().bind(&addr, move || Ok(EventService{ tx_new: tx_new.clone() })).expect("unable to create server");
     let handle = server.handle();
@@ -121,7 +121,7 @@ fn main() {
             .and_then(move |done|
                 match done {
                     Either::A((_, fu_rx)) => Either::A({//send messages
-                        let mut buf = BytesMut::with_capacity(512).writer();
+                        let mut buf = BytesMut::with_capacity(1024).writer();
                         let msg = calc_counter(&freedom);
                         //println!("msg {}", msg);
                         write!(buf, "event: uptime\ndata: {{\"time\": \"{}\"}}\n\n", msg).expect("msg write failed");
@@ -188,7 +188,7 @@ static HTML:&str = &r#"<!DOCTYPE html>
     <img class="v-mid ml0-l" alt="Rust Logo" src="https://www.rust-lang.org/static/images/rust-logo-blk.svg">
     </div>
     <script type="text/javascript">
-      var evtSource = new EventSource("http://127.0.0.1:8182/events");
+      var evtSource = new EventSource("/events");
       evtSource.addEventListener("uptime", function(e) {
           var sseMsgDiv = document.getElementById('tjcounter');
           const obj = JSON.parse(e.data);

@@ -11,6 +11,9 @@ Run this code like:
 Create Docker image:
  > docker build --no-cache -t kbalashoff/tjcounter-rust .
 
+Run in Docker:
+ > docker run -d -p 8182:8182 kbalashoff/tjcounter-rust
+
 Get image from Docker repo:
  > docker pull kbalashoff/tjcounter-rust
 

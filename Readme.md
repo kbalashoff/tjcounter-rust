@@ -9,7 +9,7 @@ Run this code like:
  Then open up your browser to http://localhost:8182
 
 Create Docker image:
- > docker build --no-cache -t kbalashoff/tjcounter-rust .
+ > docker build --no-cache -f Dockerfile -t kbalashoff/tjcounter-rust .
 
 Run in Docker:
  > docker run -d -p 8182:8182 kbalashoff/tjcounter-rust

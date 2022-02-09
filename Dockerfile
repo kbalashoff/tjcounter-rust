@@ -1,17 +1,29 @@
-# Use official Rust image: check your with rustc --version
-FROM rust:1.58.1
+FROM rust:alpine3.14 as builder
 
-# Copy files to image
-COPY ./ ./
+WORKDIR /app
 
-# Compile
-RUN cargo build --release
+RUN apk add musl-dev
 
-RUN cp ./target/release/tjcounter-rust ./tjcounter-rust
+# create a new empty project
+RUN cargo init
 
-RUN cargo clean
+COPY ./src src
+COPY ./vendor vendor
+COPY Cargo.toml Cargo.lock ./
+
+# build dependencies, when my source code changes, this build can be cached, we don't need to compile dependency again.
+RUN cargo build
+
+# remove the dummy build.
+RUN cargo clean -p tjcounter-rust
+
+# build with x86_64-unknown-linux-musl to make it run with alpine.
+RUN cargo install --path . --target=x86_64-unknown-linux-musl
+
+# second stage.
+FROM alpine:3.14
+COPY --from=builder /usr/local/cargo/bin/* /usr/local/bin
 
 EXPOSE 8182
 
-# Run
-CMD ["./tjcounter-rust"]
+CMD ["/usr/local/bin/tjcounter-rust"]
